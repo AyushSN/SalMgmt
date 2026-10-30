@@ -4,10 +4,12 @@ import incubyte.salmgmt.dto.request.EmployeeRequestDto;
 import incubyte.salmgmt.dto.respose.EmployeeResponseDto;
 import incubyte.salmgmt.entity.Employee;
 import incubyte.salmgmt.repositories.EmployeeRepository;
+import incubyte.salmgmt.specifications.EmployeeSpecifications;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,7 @@ public class EmployeeService {
         return mapToResponseDto(savedEmployee);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public EmployeeResponseDto getEmployeeById(Long id){
 
         Employee employee = employeeRepository.findById(id)
@@ -68,9 +70,15 @@ public class EmployeeService {
         return mapToResponseDto(employee);
     }
 
-    @Transactional
-    public Page<EmployeeResponseDto> getAllEmployees(Pageable pageable) {
-        return employeeRepository.findAll(pageable)
+    @Transactional(readOnly = true)
+    public Page<EmployeeResponseDto> getAllEmployees(String country,String department,String status,Pageable pageable) {
+
+        Specification<Employee> specification = Specification
+                .where(EmployeeSpecifications.hasCountry(country))
+                .and(EmployeeSpecifications.hasDepartment(department))
+                .and(EmployeeSpecifications.hasStatus(status));
+
+        return employeeRepository.findAll(specification, pageable)
                 .map(this::mapToResponseDto);
     }
 }

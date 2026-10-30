@@ -35,11 +35,23 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<Page<EmployeeResponseDto>> getAllEmployees(
-            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC)
-            Pageable pageable
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String status,
+
+            @PageableDefault(
+                    size = 20,
+                    sort = "id",
+                    direction = Sort.Direction.ASC
+            ) Pageable pageable
     ) {
         return ResponseEntity.ok(
-                employeeService.getAllEmployees(pageable)
+                employeeService.getAllEmployees(
+                        country,
+                        department,
+                        status,
+                        pageable
+                )
         );
     }
 }
