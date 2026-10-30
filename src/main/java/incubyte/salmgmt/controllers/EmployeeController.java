@@ -2,16 +2,17 @@ package incubyte.salmgmt.controllers;
 
 import incubyte.salmgmt.dto.request.EmployeeRequestDto;
 import incubyte.salmgmt.dto.respose.EmployeeResponseDto;
-import incubyte.salmgmt.entity.Employee;
 import incubyte.salmgmt.services.EmployeeService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -25,5 +26,20 @@ public class EmployeeController {
         EmployeeResponseDto response = employeeService.createEmployee(employee);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDto> getEmployeeById(@PathVariable long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<EmployeeResponseDto>> getAllEmployees(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                employeeService.getAllEmployees(pageable)
+        );
     }
 }

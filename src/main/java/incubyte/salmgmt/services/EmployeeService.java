@@ -4,7 +4,10 @@ import incubyte.salmgmt.dto.request.EmployeeRequestDto;
 import incubyte.salmgmt.dto.respose.EmployeeResponseDto;
 import incubyte.salmgmt.entity.Employee;
 import incubyte.salmgmt.repositories.EmployeeRepository;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+
+    private EmployeeResponseDto mapToResponseDto(Employee employee) {
+        return new EmployeeResponseDto(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                employee.getGender(),
+                employee.getCountry(),
+                employee.getDepartment(),
+                employee.getJobTitle(),
+                employee.getLevel(),
+                employee.getHireDate(),
+                employee.getStatus(),
+                employee.getCurrency(),
+                employee.getCurrentSalary()
+        );
+    }
 
     @Transactional
     public EmployeeResponseDto createEmployee(EmployeeRequestDto request) {
@@ -35,19 +55,22 @@ public class EmployeeService {
 
         Employee savedEmployee = employeeRepository.save(employee);
 
-        return new EmployeeResponseDto(
-                savedEmployee.getId(),
-                savedEmployee.getName(),
-                savedEmployee.getEmail(),
-                savedEmployee.getGender(),
-                savedEmployee.getCountry(),
-                savedEmployee.getDepartment(),
-                savedEmployee.getJobTitle(),
-                savedEmployee.getLevel(),
-                savedEmployee.getHireDate(),
-                savedEmployee.getStatus(),
-                savedEmployee.getCurrency(),
-                savedEmployee.getCurrentSalary()
-        );
+        return mapToResponseDto(savedEmployee);
+    }
+
+    @Transactional
+    public EmployeeResponseDto getEmployeeById(Long id){
+
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Employee not found with id " + id)
+                );
+        return mapToResponseDto(employee);
+    }
+
+    @Transactional
+    public Page<EmployeeResponseDto> getAllEmployees(Pageable pageable) {
+        return employeeRepository.findAll(pageable)
+                .map(this::mapToResponseDto);
     }
 }
