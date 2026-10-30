@@ -18,7 +18,7 @@ CREATE TABLE employee (
 
                           status varchar(20) not null default 'ACTIVE',
 
-                          currency CHAR(3) not null,
+                          currency varchar(3) not null,
                           current_salary numeric(19, 2) not null,
 
                           created_at timestamp not null default CURRENT_TIMESTAMP,
@@ -41,7 +41,7 @@ CREATE TABLE salary_history (
                                 old_amount numeric(19, 2) not null,
                                 new_amount numeric(19, 2) not null,
 
-                                currency char(3) not null,
+                                currency varchar(3) not null,
 
                                 effective_date date not null,
 
@@ -61,7 +61,7 @@ CREATE TABLE salary_history (
 -- FX RATE TABLE
 
 CREATE TABLE fx_rate (
-                         currency char(3) primary key,
+                         currency varchar(3) primary key,
 
                          rate_to_usd numeric(19, 8) not null,
 
