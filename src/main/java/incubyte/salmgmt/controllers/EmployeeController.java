@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/employees")
 @RequiredArgsConstructor
@@ -38,6 +40,8 @@ public class EmployeeController {
             @RequestParam(required = false) String country,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) BigDecimal minSalary,
+            @RequestParam(required = false) BigDecimal maxSalary,
 
             @PageableDefault(
                     size = 20,
@@ -50,6 +54,8 @@ public class EmployeeController {
                         country,
                         department,
                         status,
+                        minSalary,
+                        maxSalary,
                         pageable
                 )
         );

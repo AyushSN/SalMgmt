@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
@@ -71,12 +73,20 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<EmployeeResponseDto> getAllEmployees(String country,String department,String status,Pageable pageable) {
-
+    public Page<EmployeeResponseDto> getAllEmployees(
+            String country,
+            String department,
+            String status,
+            BigDecimal minSalary,
+            BigDecimal maxSalary,
+            Pageable pageable
+    ) {
         Specification<Employee> specification = Specification
                 .where(EmployeeSpecifications.hasCountry(country))
                 .and(EmployeeSpecifications.hasDepartment(department))
-                .and(EmployeeSpecifications.hasStatus(status));
+                .and(EmployeeSpecifications.hasStatus(status))
+                .and(EmployeeSpecifications.hasMinimumSalary(minSalary))
+                .and(EmployeeSpecifications.hasMaximumSalary(maxSalary));
 
         return employeeRepository.findAll(specification, pageable)
                 .map(this::mapToResponseDto);
