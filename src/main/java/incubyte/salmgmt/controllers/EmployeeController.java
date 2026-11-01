@@ -1,7 +1,11 @@
 package incubyte.salmgmt.controllers;
 
 import incubyte.salmgmt.dto.request.EmployeeRequestDto;
+import incubyte.salmgmt.dto.request.EmployeeStatusUpdateRequestDto;
+import incubyte.salmgmt.dto.request.EmployeeUpdateRequestDto;
+import incubyte.salmgmt.dto.request.SalaryUpdateRequestDto;
 import incubyte.salmgmt.dto.respose.EmployeeResponseDto;
+import incubyte.salmgmt.dto.respose.SalaryHistoryResponseDto;
 import incubyte.salmgmt.services.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -58,6 +63,45 @@ public class EmployeeController {
                         maxSalary,
                         pageable
                 )
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDto> updateEmployee(
+            @PathVariable Long id,
+            @Valid @RequestBody EmployeeUpdateRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                employeeService.updateEmployee(id, request)
+        );
+    }
+
+    @PatchMapping("/{id}/salary")
+    public ResponseEntity<EmployeeResponseDto> updateEmployeeSalary(
+            @PathVariable Long id,
+            @Valid @RequestBody SalaryUpdateRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                employeeService.updateEmployeeSalary(id, request)
+        );
+    }
+
+    @GetMapping("/{id}/salary-history")
+    public ResponseEntity<List<SalaryHistoryResponseDto>> getEmployeeSalaryHistory(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                employeeService.getEmployeeSalaryHistory(id)
+        );
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<EmployeeResponseDto> updateEmployeeStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody EmployeeStatusUpdateRequestDto request
+    ) {
+        return ResponseEntity.ok(
+                employeeService.updateEmployeeStatus(id, request)
         );
     }
 }

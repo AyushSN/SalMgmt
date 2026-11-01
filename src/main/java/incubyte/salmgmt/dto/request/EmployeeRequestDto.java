@@ -35,11 +35,11 @@ public record EmployeeRequestDto(
         LocalDate hireDate,
 
         @NotBlank
-        @Size(min = 3, max = 3)
+        @Pattern(regexp = "^[A-Z]{3}$", message = "Currency must be a 3-letter uppercase code")
         String currency,
 
         @NotNull
-        @DecimalMin("0.00")
+        @DecimalMin(value = "0.00", inclusive = false)
         @Digits(integer = 17, fraction = 2)
         BigDecimal currentSalary
 
